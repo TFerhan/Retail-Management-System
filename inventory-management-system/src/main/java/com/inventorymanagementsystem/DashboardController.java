@@ -88,40 +88,52 @@ public class DashboardController implements Initializable {
     private ResultSet resultSet;
 
     @FXML
-    private Button bill_add;
+    private Button commande_ajt;
 
     @FXML
-    private Button bill_clear;
+    private Button commande_efface;
 
     @FXML
-    private DatePicker bill_date;
+    private DatePicker commande_date;
 
     @FXML
-    private TextField bill_item;
+    private TextField commande_id_pd;
 
     @FXML
-    private TextField bill_name;
+    private TextField commande_nom;
+    
+    @FXML
+    private TextField commande_prenom;
+    
+    @FXML
+    private TextField commande_addresse;
+    
+    @FXML
+    private TextField date_comm_livraison;
 
     @FXML
-    private TextField bill_phone;
+    private TextField commande_tele;
 
     @FXML
-    private TextField bill_price;
+    private TextField commande_prix;
 
     @FXML
-    private Button bill_print;
+    private Button commande_print;
 
     @FXML
-    private ComboBox<?> bill_quantity;
+    private ComboBox<?> commande_quant;
 
     @FXML
-    private Button bill_save;
+    private Button commande_sauv;
 
     @FXML
-    private TextField bill_total_amount;
+    private TextField total_final;
+    
+    @FXML
+    private TextField commande_total;
 
     @FXML
-    private TableView<Billing> billing_table;
+    private TableView<Commande> commande_table;
 
     @FXML
     private TextField billing_table_search;
@@ -131,19 +143,19 @@ public class DashboardController implements Initializable {
 
     private  String invoiceList[]={"BX123456","ZX123456","AX123456"};
 
-    private String quantityList[]={"1","2","3","4","5","6","7","8","9","10"};
+    private String quantityList[]={"1","2","3","4","5","6","7","8","9","10","20", "40","50","100", "1000"};
 
     @FXML
-    private TableColumn<?, ?> col_bill_item_num;
+    private TableColumn<?, ?> col_commande_id_prd;
 
     @FXML
-    private TableColumn<?, ?> col_bill_price;
+    private TableColumn<?, ?> col_commande_prix;
 
     @FXML
-    private TableColumn<?, ?> col_bill_quantity;
+    private TableColumn<?, ?> col_commande_quant;
 
     @FXML
-    private TableColumn<?, ?> col_bill_total_amt;
+    private TableColumn<?, ?> col_commande_total;
 
     @FXML
     private Button cust_btn_add;
@@ -377,7 +389,7 @@ public class DashboardController implements Initializable {
 
     public void setInvoiceNum(){
         connection=Database.getInstance().connectDB();
-        String sql="SELECT MAX(inv_num) AS inv_num FROM sales";
+        String sql="SELECT MAX(inv_num) AS inv_num FROM factures";
 
         try {
             statement = connection.createStatement();
@@ -385,13 +397,13 @@ public class DashboardController implements Initializable {
             while(resultSet.next()) {
                 String result=resultSet.getString("inv_num");
                 if (result == null) {
-                    Invoice.billingInvoiceNumber = "INV-1";
-                    inv_num.setText(Invoice.billingInvoiceNumber);
+                    Invoice.commandeInvoiceNumber = "INV-1";
+                    inv_num.setText(Invoice.commandeInvoiceNumber);
                 } else {
                     int invId = Integer.parseInt(result.substring(4));
                     invId++;
-                    Invoice.billingInvoiceNumber = "INV-" + invId;
-                    inv_num.setText(Invoice.billingInvoiceNumber);
+                    Invoice.commandeInvoiceNumber = "INV-" + invId;
+                    inv_num.setText(Invoice.commandeInvoiceNumber);
                 }
             }
         }catch (Exception err){
@@ -402,7 +414,7 @@ public class DashboardController implements Initializable {
         getItemsList();
         List<Integer> itemNumberList=productsList.stream().map(Product::getId).collect(Collectors.toList());
         ObservableList<Integer> observableItemList=FXCollections.observableArrayList(itemNumberList);
-        TextFields.bindAutoCompletion(bill_item,observableItemList);
+        TextFields.bindAutoCompletion(commande_id_pd,observableItemList);
     }
 
     public void comboBoxQuantity(){
@@ -411,20 +423,20 @@ public class DashboardController implements Initializable {
             list.add(quantity);
         }
         ObservableList comboList= FXCollections.observableArrayList(list);
-        bill_quantity.setItems(comboList);
+        commande_quant.setItems(comboList);
     }
     public void checkForPriceandQuantity(){
-        if(!bill_price.getText().isBlank()&& !bill_quantity.getSelectionModel().isEmpty()){
-            bill_total_amount.setText(String.valueOf(Integer.parseInt(bill_price.getText())*Integer.parseInt(bill_quantity.getValue().toString())));
+        if(!commande_prix.getText().isBlank()&& !commande_quant.getSelectionModel().isEmpty()){
+            commande_total.setText(String.valueOf(Integer.parseInt(commande_prix.getText())*Integer.parseInt(commande_quant.getValue().toString())+100));
         }else{
-            bill_total_amount.setText("0");
+            commande_total.setText("0");
         }
     }
     public void getPriceOfTheItem(){
         try {
-            Product product = productsList.stream().filter(prod -> prod.getId().equals(bill_item.getText())).findAny().get();
+            Product product = productsList.stream().filter(prod -> String.valueOf(prod.getId()).equals(commande_id_pd.getText())).findAny().get();
             System.out.println("Price " + product.getPrice());
-            bill_price.setText(String.valueOf((int) product.getPrice()));
+            commande_prix.setText(String.valueOf((int) product.getPrice()));
         }catch (Exception err){
             Alert alert=new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Message");
@@ -435,58 +447,43 @@ public class DashboardController implements Initializable {
     }
 
     public void onInputTextChanged(){
-        bill_price.setOnKeyReleased(event-> checkForPriceandQuantity());
-        bill_price.setOnKeyPressed(event-> checkForPriceandQuantity());
-        bill_price.setOnKeyTyped(event-> checkForPriceandQuantity());
-        bill_quantity.setOnAction(actionEvent -> checkForPriceandQuantity());
-        bill_item.setOnKeyPressed(actionEvent ->{
+        commande_prix.setOnKeyReleased(event-> checkForPriceandQuantity());
+        commande_prix.setOnKeyPressed(event-> checkForPriceandQuantity());
+        commande_prix.setOnKeyTyped(event-> checkForPriceandQuantity());
+        commande_quant.setOnAction(actionEvent -> checkForPriceandQuantity());
+        commande_id_pd.setOnKeyPressed(actionEvent ->{
             if(actionEvent.getCode().equals(KeyCode.ENTER)) {
                 getPriceOfTheItem();
             }
         });
     }
-    public void searchForBills(){
-		if (billing_table_search.getText().isBlank()) {
-			showBillingData();
-		} else {
-			// compae with item number in product table
-			String query = "SELECT * FROM products WHERE name = ? ";
-			try {
-				preparedStatement = connection.prepareStatement(query);
-				preparedStatement.setString(1, billing_table_search.getText());
-				resultSet = preparedStatement.executeQuery();
-				// get the item number of the product and set it in the text field
-				
-		}
-    	
-        
-    }
-    public void addBillingData(){
-        if(bill_item.getText().isBlank()||bill_quantity.getSelectionModel().isEmpty()||bill_price.getText().isBlank()||bill_total_amount.getText().isBlank()){
+
+    public void addCommandeData(){
+        if(commande_id_pd.getText().isBlank()||commande_quant.getSelectionModel().isEmpty()||commande_prix.getText().isBlank()||commande_total.getText().isBlank()){
             Alert alert=new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Message");
             alert.setHeaderText(null);
-            alert.setContentText("Please fill the mandatory data such as item number, quantity and price .");
+            alert.setContentText("Veuillez les champs obligatoires , id prd, quantite, prix.");
             alert.showAndWait();
             return;
         }
         connection=Database.getInstance().connectDB();
-        String sql="INSERT INTO billing(item_number,quantity,price,total_amount)VALUES(?,?,?,?)";
+        String sql="INSERT INTO commande(item_number,quantity,price,total_amount)VALUES(?,?,?,?)";
         try{
             preparedStatement=connection.prepareStatement(sql);
-            preparedStatement.setString(1,bill_item.getText());
-            preparedStatement.setString(2, bill_quantity.getValue().toString());
-            preparedStatement.setString(3, bill_price.getText());
-            preparedStatement.setString(4,bill_total_amount.getText());
+            preparedStatement.setString(1,commande_id_pd.getText());
+            preparedStatement.setString(2, commande_quant.getValue().toString());
+            preparedStatement.setString(3, commande_prix.getText());
+            preparedStatement.setString(4,commande_total.getText());
             int result=preparedStatement.executeUpdate();
             if(result>0){
-               showBillingData();
-               billClearData();
+               showCommandeData();
+               commandeClearData();
             }else{
                 Alert alert=new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error Message");
                 alert.setHeaderText(null);
-                alert.setContentText("Please fill the mandatory data such as item number, quantity and price .");
+                alert.setContentText("Veuillez les champs obligatoires , id prd, quantite, prix.");
                 alert.showAndWait();
             }
         }catch (Exception err){
@@ -494,19 +491,19 @@ public class DashboardController implements Initializable {
         }
     }
 
-    public ObservableList<Billing> listBilligData(){
-        ObservableList<Billing> billingList=FXCollections.observableArrayList();
+    public ObservableList<Commande> listBilligData(){
+        ObservableList<Commande> billingList=FXCollections.observableArrayList();
         connection=Database.getInstance().connectDB();
-        String sql="SELECT * FROM billing";
+        String sql="SELECT * FROM commande";
         try{
             statement=connection.createStatement();
             resultSet=statement.executeQuery(sql);
 
 
-              Billing billingData;
+              Commande commandeData;
               while (resultSet.next()){
-              billingData=new Billing(resultSet.getString("item_number"),Integer.parseInt(resultSet.getString("quantity")),Double.parseDouble(resultSet.getString("price")),Double.parseDouble(resultSet.getString("total_amount")));
-              billingList.addAll(billingData);
+              commandeData=new Commande(resultSet.getString("item_number"),Integer.parseInt(resultSet.getString("quantity")),Double.parseDouble(resultSet.getString("price")),Double.parseDouble(resultSet.getString("total_amount")));
+              billingList.addAll(commandeData);
              }
 
 
@@ -518,12 +515,12 @@ public class DashboardController implements Initializable {
 
     public void calculateFinalAmount(){
         connection=Database.getInstance().connectDB();
-        String sql="SELECT SUM(total_amount) AS final_amount FROM billing";
+        String sql="SELECT SUM(total_amount) AS final_amount FROM commande";
         try{
             statement=connection.createStatement();
             resultSet=statement.executeQuery(sql);
             if(resultSet.next()){
-                final_amount.setText(resultSet.getString("final_amount"));
+                total_final.setText(resultSet.getString("final_amount"));
             }
 
         }catch (Exception err){
@@ -531,65 +528,91 @@ public class DashboardController implements Initializable {
         }
 
     }
+    
+    public void addDateShipping() {
+    	connection = Database.getInstance().connectDB();
+    	String sql = "INSERT INTO livraison(dateliv) VALUES(?)";
+    	try {
+    		preparedStatement = connection.prepareStatement(sql);
+    		preparedStatement.setString(1, date_comm_livraison.getText());
+    		int result = preparedStatement.executeUpdate();
+    		if(result > 0) {
+    			showCommandeData();
+    			commandeClearData();
+    		}else {
+    			Alert alert = new Alert(Alert.AlertType.ERROR);
+    			alert.setTitle("Error Message");
+    			alert.setHeaderText(null);
+    			alert.setContentText("Veuillez les champs obligatoires , date de livraison.");
+    			alert.showAndWait();
+    		}
+    	
+    }}
 
-    public void showBillingData(){
-        ObservableList<Billing> billingList=listBilligData();
-        col_bill_item_num.setCellValueFactory(new PropertyValueFactory<>("item_number"));
-        col_bill_quantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
-        col_bill_price.setCellValueFactory(new PropertyValueFactory<>("price"));
-        col_bill_total_amt.setCellValueFactory(new PropertyValueFactory<>("total_amount"));
+    public void showCommandeData(){
+        ObservableList<Commande> billingList=listBilligData();
+        col_commande_id_prd.setCellValueFactory(new PropertyValueFactory<>("NProduit"));
+        col_commande_quant.setCellValueFactory(new PropertyValueFactory<>("Quantite"));
+        col_commande_prix.setCellValueFactory(new PropertyValueFactory<>("Prix"));
+        col_commande_total.setCellValueFactory(new PropertyValueFactory<>("Total"));
 
-        billing_table.setItems(billingList);
+        commande_table.setItems(billingList);
         LocalDate date=LocalDate.now();
-        bill_date.setValue(date);
+        commande_date.setValue(date);
         if(!billingList.isEmpty()){
          calculateFinalAmount();
         }else{
-            final_amount.setText("0.00");
+            total_final.setText("0.00");
         }
 
     }
 
-    public void billClearCustomerData(){
-        bill_name.setText("");
-        bill_phone.setText("");
+    public void CommandeClearCustomerData(){
+        commande_nom.setText("");
+        commande_tele.setText("");
+        commande_prenom.setText("");
+        commande_addresse.setText("");
+        
     }
 
-    public void billClearData(){
-        bill_item.clear();
-        bill_quantity.setValue(null);
-        bill_price.setText("");
-        bill_total_amount.setText("");
+    public void commandeClearData(){
+        commande_id_pd.clear();
+        commande_quant.setValue(null);
+        commande_prix.setText("");
+        commande_total.setText("");
+        date_comm_livraison.setText("");
+        
+        
     }
 
-    public void selectBillingTableData(){
-        int num=billing_table.getSelectionModel().getSelectedIndex();
-        Billing billingData=billing_table.getSelectionModel().getSelectedItem();
+    public void selectCommandeTableData(){
+        int num=commande_table.getSelectionModel().getSelectedIndex();
+        Commande commandeData=commande_table.getSelectionModel().getSelectedItem();
         if(num-1 < -1){
             return;
         }
-        bill_item.setText(billingData.getItem_number());
-        bill_price.setText(String.valueOf((int)billingData.getPrice()));
-        bill_total_amount.setText(String.valueOf((int)billingData.getTotal_amount()));
+        commande_id_pd.setText(commandeData.getItem_number());
+        commande_prix.setText(String.valueOf((int)commandeData.getPrice()));
+        commande_total.setText(String.valueOf((int)commandeData.getTotal_amount()));
     }
-    public void updateSelectedBillingData() {
+    public void updateSelectedCommandeData() {
         connection = Database.getInstance().connectDB();
-        String sql = "UPDATE billing SET quantity=?,price=?,total_amount=? WHERE item_number=?";
+        String sql = "UPDATE commande SET quantity=?,price=?,total_amount=? HERE item_number=?";
         try {
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1,bill_quantity.getValue().toString());
-            preparedStatement.setString(2, bill_price.getText());
-            preparedStatement.setString(3, bill_total_amount.getText());
-            preparedStatement.setString(4, bill_item.getText());
+            preparedStatement.setString(1,commande_quant.getValue().toString());
+            preparedStatement.setString(2, commande_prix.getText());
+            preparedStatement.setString(3, commande_total.getText());
+            preparedStatement.setString(4, commande_id_pd.getText());
             int result = preparedStatement.executeUpdate();
             if (result > 0) {
-                showBillingData();
-                billClearData();
+                showCommandeData();
+                commandeClearData();
             } else {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error Message");
                 alert.setHeaderText(null);
-                alert.setContentText("Please fill the mandatory data such as item number, quantity and price .");
+                alert.setContentText("Veuillez les champs obligatoires , id prd, quantite, prix.");
                 alert.showAndWait();
             }
         } catch (Exception err) {
@@ -597,27 +620,27 @@ public class DashboardController implements Initializable {
         }
     }
 
-    public void deleteBillingData(){
+    public void deleteCommandeData(){
         connection = Database.getInstance().connectDB();
         String sql;
         try {
-            if(billing_table.getSelectionModel().isEmpty()){
-                sql = "DELETE FROM billing";
+            if(commande_table.getSelectionModel().isEmpty()){
+                sql = "DELETE FROM commande";
                 preparedStatement = connection.prepareStatement(sql);
             }else{
-                sql="DELETE FROM billing WHERE item_number=?";
+                sql="DELETE FROM commande WHERE item_number=?";
                 preparedStatement = connection.prepareStatement(sql);
-                preparedStatement.setString(1,billing_table.getSelectionModel().getSelectedItem().getItem_number());
+                preparedStatement.setString(1,commande_table.getSelectionModel().getSelectedItem().getItem_number());
             }
            int result = preparedStatement.executeUpdate();
             if (result > 0) {
-                showBillingData();
-                billClearData();
+                showCommandeData();
+                commandeClearData();
             } else {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Message");
                 alert.setHeaderText(null);
-                alert.setContentText("No data present in the billing table..");
+                alert.setContentText("Aucun contenu dans la table..");
                 alert.showAndWait();
             }
         } catch (Exception err) {
@@ -625,32 +648,34 @@ public class DashboardController implements Initializable {
         }
     }
     public boolean saveCustomerDetails(){
-        if(bill_phone.getText().isBlank() || bill_name.getText().isBlank()){
+        if(commande_tele.getText().isBlank() || commande_nom.getText().isBlank() || commande_prenom.getText().isBlank() || commande_addresse.getText().isBlank() || date_comm_livraison.getText().isBlank()){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Message");
             alert.setHeaderText(null);
-            alert.setContentText("Kindly Fill Customer Name and Phone number.");
+            alert.setContentText("Remplir le nom, prenom , addresse et le num de telephone");
             alert.showAndWait();
             return false;
         }
         connection = Database.getInstance().connectDB();
-        String sql="SELECT * FROM customers WHERE PhoneNumber=?";
+        String sql="SELECT * FROM clients WHERE PhoneNumber=?";
         try {
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1,bill_phone.getText());
+            preparedStatement.setString(1,commande_tele.getText());
             resultSet= preparedStatement.executeQuery();
             if (resultSet.next()) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Message");
                 alert.setHeaderText(null);
-                alert.setContentText("Customer Data is already present in customer table. Proceeding further to save invoice.");
+                alert.setContentText("Client existe deja. Commande procédé");
                 alert.showAndWait();
                 return true;
             } else {
-                String customerSql="INSERT INTO customers(Name,PhoneNumber) VALUES(?,?)";
+                String customerSql="INSERT INTO clients(Name,prenom, address,PhoneNumber) VALUES(?,?,?,?)";
                 preparedStatement = connection.prepareStatement(customerSql);
-                preparedStatement.setString(1,bill_name.getText());
-                preparedStatement.setString(2,bill_phone.getText());
+                preparedStatement.setString(1,commande_nom.getText());
+                preparedStatement.setString(2,commande_prenom.getText());
+                preparedStatement.setString(3,commande_addresse.getText());
+                preparedStatement.setString(4,commande_tele.getText());
                 int result= preparedStatement.executeUpdate();
                 if(result>0){
                     showCustomerData();
@@ -659,7 +684,7 @@ public class DashboardController implements Initializable {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Message");
                     alert.setHeaderText(null);
-                    alert.setContentText("Customer Data not saved. Please fill name and phone number correctly.");
+                    alert.setContentText("Client non enregisté. Veuillez saisir les données correctement");
                     alert.showAndWait();
                     return false;
                 }
@@ -672,21 +697,21 @@ public class DashboardController implements Initializable {
     public void saveInvoiceDetails(){
         // GET CUSTOMER ID FOR MAPPING INVOICE RECORDS
         connection=Database.getInstance().connectDB();
-        String sql="SELECT id FROM customers WHERE PhoneNumber=?";
+        String sql="SELECT id FROM clients WHERE PhoneNumber=?";
         try{
             preparedStatement=connection.prepareStatement(sql);
-            preparedStatement.setString(1,bill_phone.getText());
+            preparedStatement.setString(1,commande_tele.getText());
             resultSet=preparedStatement.executeQuery();
             if(resultSet.next()){
                   String custId=resultSet.getString("id");
                   // GET BILLING TABLE DETAILS
-                  String getBillingDetails="SELECT * FROM billing";
+                  String getBillingDetails="SELECT * FROM commande";
                   preparedStatement=connection.prepareStatement(getBillingDetails);
                   resultSet=preparedStatement.executeQuery();
                   // SAVE INVOICE DETAILS ALONG WITH CUSTOMER ID AND DATE IN SALES TABLE
                   int count=0;
                   while (resultSet.next()){
-                      String salesDetailsSQL="INSERT INTO sales(inv_num,item_number,cust_id,price,quantity,total_amount,date) VALUES(?,?,?,?,?,?,?)";
+                      String salesDetailsSQL="INSERT INTO factures(inv_num,item_number,cust_id,price,quantity,total_amount,date) VALUES(?,?,?,?,?,?,?)";
                       preparedStatement=connection.prepareStatement(salesDetailsSQL);
                       preparedStatement.setString(1,inv_num.getText());
                       preparedStatement.setString(2,resultSet.getString("item_number"));
@@ -694,33 +719,33 @@ public class DashboardController implements Initializable {
                       preparedStatement.setString(4,resultSet.getString("price"));
                       preparedStatement.setString(5,resultSet.getString("quantity"));
                       preparedStatement.setString(6,resultSet.getString("total_amount"));
-                      preparedStatement.setString(7,bill_date.getValue().toString());
+                      preparedStatement.setString(7,commande_date.getValue().toString());
                       preparedStatement.executeUpdate();
                       count++;
                   }
                   if(count>0){
-                      billClearCustomerData();
-                      deleteBillingData();
+                      CommandeClearCustomerData();
+                      deleteCommandeData();
                       showSalesData();
                       setInvoiceNum();
                       showDashboardData();
                       Alert alert = new Alert(Alert.AlertType.INFORMATION);
                       alert.setTitle("Message");
                       alert.setHeaderText(null);
-                      alert.setContentText("Data is successfully saved in the sales tables. ");
+                      alert.setContentText("Data est enregistré avec success");
                       alert.showAndWait();
                   }else{
                       Alert alert = new Alert(Alert.AlertType.ERROR);
                       alert.setTitle("Error Message");
                       alert.setHeaderText(null);
-                      alert.setContentText("No Data saved in the sales table. ");
+                      alert.setContentText("Aucune data est enrgistrer ");
                       alert.showAndWait();
                   }
             }else{
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error Message");
                 alert.setHeaderText(null);
-                alert.setContentText("Kindly fill Customer Details such as Name and Phone Number correctly.");
+                alert.setContentText("Remplir correctement le nom et le num de telephone");
                 alert.showAndWait();
             }
         }catch (Exception err){
@@ -730,7 +755,7 @@ public class DashboardController implements Initializable {
 
     }
 
-    public void billSave(){
+    public void commandeSave(){
         // Save Customer Details
         if(!saveCustomerDetails()) {
             return;
@@ -742,7 +767,7 @@ public class DashboardController implements Initializable {
 
     public void printBill(){
      connection=Database.getInstance().connectDB();
-     String sql="SELECT * FROM `sales` s INNER JOIN customers c ON s.cust_id=c.id and s.inv_num=(SELECT MAX(inv_num) as inv_num FROM `sales`)";
+     String sql="SELECT * FROM `factures` s INNER JOIN clients c ON s.cust_id=c.id and s.inv_num=(SELECT MAX(inv_num) as inv_num FROM `sales`)";
      try{
          JasperDesign jasperDesign= JRXmlLoader.load(this.getClass().getClassLoader().getResourceAsStream("jasper-reports/Invoice.jrxml"));
          JRDesignQuery updateQuery=new JRDesignQuery();
@@ -763,7 +788,7 @@ public class DashboardController implements Initializable {
     public ObservableList<Customer> listCustomerData(){
         ObservableList<Customer> customersList=FXCollections.observableArrayList();
         connection=Database.getInstance().connectDB();
-        String sql="SELECT * FROM customers";
+        String sql="SELECT * FROM clients";
         try{
             statement=connection.createStatement();
             resultSet=statement.executeQuery(sql);
@@ -790,7 +815,7 @@ public class DashboardController implements Initializable {
     }
     public boolean checkForCustomerAvailability(){
         connection=Database.getInstance().connectDB();
-        String sql="SELECT * FROM customers WHERE PhoneNumber=?";
+        String sql="SELECT * FROM clients WHERE PhoneNumber=?";
         try{
             preparedStatement=connection.prepareStatement(sql);
             preparedStatement.setString(1,cust_field_phone.getText());
@@ -816,7 +841,7 @@ public class DashboardController implements Initializable {
             return;
         }
         connection=Database.getInstance().connectDB();
-        String sql="INSERT INTO customers(Name,PhoneNumber)VALUES(?,?)";
+        String sql="INSERT INTO clients(Name,PhoneNumber)VALUES(?,?)";
         try{
             preparedStatement=connection.prepareStatement(sql);
             preparedStatement.setString(1,cust_field_name.getText());
@@ -857,7 +882,7 @@ public class DashboardController implements Initializable {
             return;
         }
         connection = Database.getInstance().connectDB();
-        String sql = "UPDATE customers SET Name=? WHERE PhoneNumber=?";
+        String sql = "UPDATE clients SET Name=? WHERE PhoneNumber=?";
         try {
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1,cust_field_name.getText());
@@ -888,7 +913,7 @@ public class DashboardController implements Initializable {
             return;
         }
         connection = Database.getInstance().connectDB();
-        String sql="DELETE FROM customers WHERE PhoneNumber=?";
+        String sql="DELETE FROM clients WHERE PhoneNumber=?";
         try {
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1,customer_table.getSelectionModel().getSelectedItem().getPhoneNumber());
@@ -914,7 +939,7 @@ public class DashboardController implements Initializable {
     }
     public void printCustomersDetails(){
         connection=Database.getInstance().connectDB();
-        String sql="SELECT * FROM customers";
+        String sql="SELECT * FROM clients";
         try{
             JasperDesign jasperDesign= JRXmlLoader.load(this.getClass().getClassLoader().getResourceAsStream("jasper-reports/customers.jrxml"));
             JRDesignQuery updateQuery=new JRDesignQuery();
@@ -929,7 +954,7 @@ public class DashboardController implements Initializable {
     }
     public void getTotalSalesAmount(){
         connection=Database.getInstance().connectDB();
-        String sql="SELECT SUM(total_amount) as total_sale_amount FROM sales";
+        String sql="SELECT SUM(total_amount) as total_sale_amount FROM factures";
         try{
             statement=connection.createStatement();
             resultSet=statement.executeQuery(sql);
@@ -954,7 +979,7 @@ public class DashboardController implements Initializable {
     public ObservableList<Sales> listSalesData(){
         ObservableList<Sales> salesList=FXCollections.observableArrayList();
         connection=Database.getInstance().connectDB();
-        String sql="SELECT * FROM sales s INNER JOIN customers c ON s.cust_id=c.id";
+        String sql="SELECT * FROM factures s INNER JOIN clients c ON s.cust_id=c.id";
         try{
             statement=connection.createStatement();
             resultSet=statement.executeQuery(sql);
@@ -984,7 +1009,7 @@ public class DashboardController implements Initializable {
     }
     public void printSalesDetails(){
         connection=Database.getInstance().connectDB();
-        String sql="SELECT * FROM sales s INNER JOIN customers c ON s.cust_id=c.id";
+        String sql="SELECT * FROM factures s INNER JOIN clients c ON s.cust_id=c.id";
         try{
             JasperDesign jasperDesign= JRXmlLoader.load(this.getClass().getClassLoader().getResourceAsStream("jasper-reports/sales_report.jrxml"));
             JRDesignQuery updateQuery=new JRDesignQuery();
@@ -1024,7 +1049,7 @@ public class DashboardController implements Initializable {
     }
     public void printPurchaseDetails(){
         connection=Database.getInstance().connectDB();
-        String sql="SELECT * FROM purchase";
+        String sql="SELECT * FROM products";
         try{
             JasperDesign jasperDesign= JRXmlLoader.load(this.getClass().getClassLoader().getResourceAsStream("jasper-reports/purchase_report.jrxml"));
             JRDesignQuery updateQuery=new JRDesignQuery();
@@ -1094,34 +1119,11 @@ public class DashboardController implements Initializable {
         }catch (Exception err){
             err.printStackTrace();}}
 
-    public void getTotalPurchase(){
-        connection=Database.getInstance().connectDB();
-        String sql="SELECT SUM(total_items) as total_purchase FROM purchase";
-        try{
-            statement=connection.createStatement();
-            resultSet=statement.executeQuery(sql);
-            while (resultSet.next()){
-                String result=resultSet.getString("total_purchase");
-                if (result == null) {
-                    dash_total_purchase.setText("0");
-                }else{
-                    dash_total_purchase.setText(result);
-                }
-            }
-        }catch (Exception err){
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setHeight(500);
-            alert.setTitle("Error Message");
-            alert.setHeaderText(null);
-            alert.setContentText(err.getMessage());
-            alert.showAndWait();
-        }
 
-    }
 
     public void getTotalSales(){
         connection=Database.getInstance().connectDB();
-        String sql="SELECT SUM(quantity) as total_sale FROM sales";
+        String sql="SELECT SUM(quantity) as total_sale FROM factures";
         try{
             statement=connection.createStatement();
             resultSet=statement.executeQuery(sql);
@@ -1155,7 +1157,7 @@ public class DashboardController implements Initializable {
         LocalDate date=LocalDate.now();
         String monthName=date.getMonth().toString();
         connection=Database.getInstance().connectDB();
-        String sql="SELECT SUM(total_amount) as total_sales_this_month FROM sales WHERE MONTHNAME(date)=?";
+        String sql="SELECT SUM(total_amount) as total_sales_this_month FROM factures WHERE MONTHNAME(date)=?";
         try{
             preparedStatement=connection.prepareStatement(sql);
             preparedStatement.setString(1,monthName);
@@ -1182,7 +1184,7 @@ public class DashboardController implements Initializable {
         LocalDate date=LocalDate.now();
         String monthName=date.getMonth().toString();
         connection=Database.getInstance().connectDB();
-        String sql="SELECT SUM(quantity) as total_items_sold_this_month FROM sales WHERE MONTHNAME(date)=?";
+        String sql="SELECT SUM(quantity) as total_items_sold_this_month FROM factures WHERE MONTHNAME(date)=?";
         try{
             preparedStatement=connection.prepareStatement(sql);
             preparedStatement.setString(1,monthName);
@@ -1206,7 +1208,6 @@ public class DashboardController implements Initializable {
         }
     }
     public void showDashboardData(){
-     getTotalPurchase();
      getTotalSales();
      getTotalStocks();
      getSalesDetailsOfThisMonth();
@@ -1256,7 +1257,7 @@ public class DashboardController implements Initializable {
         setAutoCompleteItemNumber();
         comboBoxQuantity();
         setInvoiceNum();
-        showBillingData();
+        showCommandeData();
 
 //      CUSTOMER PANE
         showCustomerData();
