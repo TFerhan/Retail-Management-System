@@ -1,47 +1,47 @@
 package com.inventorymanagementsystem.entity;
 
 public class Commande {
-    private String item_number;
-    private int quantity;
-    private double price;
-    private double total_amount;
+    private String NProduit;
+    private int Quantite;
+    private double Prix;
+    private double Total;
 
     public Commande(String item_number, int quantity, double price, double total_amount) {
-        this.item_number = item_number;
-        this.quantity = quantity;
-        this.price = price;
-        this.total_amount = total_amount;
+        this.NProduit = item_number;
+        this.Quantite = quantity;
+        this.Prix = price;
+        this.Total = total_amount;
     }
 
-    public String getItem_number() {
-        return item_number;
+    public String getNProduit() {
+        return NProduit;
     }
 
-    public void setItem_number(String item_number) {
-        this.item_number = item_number;
+    public void setNProduit(String item_number) {
+        this.NProduit = item_number;
     }
 
-    public int getQuantity() {
-        return quantity;
+    public int getQuantite() {
+        return Quantite;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setQuantite(int quantity) {
+        this.Quantite = quantity;
     }
 
-    public double getPrice() {
-        return price;
+    public double getPrix() {
+        return Prix;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public void setPrix(double price) {
+        this.Prix = price;
     }
 
-    public double getTotal_amount() {
-        return total_amount;
+    public double getTotal() {
+        return Total;
     }
 
-    public void setTotal_amount(double total_amount) {
-        this.total_amount = total_amount;
+    public void setTotal(double total_amount) {
+        this.Total = total_amount;
     }
 }
