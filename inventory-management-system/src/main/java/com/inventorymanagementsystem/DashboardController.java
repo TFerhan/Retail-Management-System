@@ -4,6 +4,8 @@ import com.inventorymanagementsystem.entity.*;
 import com.inventorymanagementsystem.config.Database;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -44,6 +46,9 @@ public class DashboardController implements Initializable {
 
     @FXML
     private Button billing_btn;
+    
+    @FXML
+    private Button liv_btn;
 
     @FXML
     private AnchorPane billing_pane;
@@ -62,6 +67,18 @@ public class DashboardController implements Initializable {
 
     @FXML
     private AnchorPane dasboard_pane;
+    
+    @FXML
+    private TextField search_livraison;
+    
+    @FXML
+    private TextField search_customer;
+    
+    @FXML
+    private TextField search_product;
+    
+    @FXML
+    private TextField search_sales;
 
 
     @FXML
@@ -75,7 +92,12 @@ public class DashboardController implements Initializable {
 
     @FXML
     private AnchorPane sales_pane;
+    
+    @FXML
+    private AnchorPane liv_pane;
 
+    
+    
     @FXML
     private Label user;
 
@@ -119,6 +141,9 @@ public class DashboardController implements Initializable {
     
     @FXML
     private DatePicker date_comm_livraison;
+    
+    @FXML
+    private DatePicker search_liv_date;
 
     @FXML
     private TextField commande_prix;
@@ -139,6 +164,18 @@ public class DashboardController implements Initializable {
 
     @FXML
     private TableView<Commande> commande_table;
+    
+    @FXML
+    private TableView<Livraison> liv_table;
+    
+    @FXML
+    private TableColumn<?, ?> liv_id;
+    
+    @FXML
+    private TableColumn<?, ?> liv_num_facture;
+    
+    @FXML
+    private TableColumn<?, ?> liv_date;
 
     @FXML
     private TextField billing_table_search;
@@ -310,6 +347,7 @@ public class DashboardController implements Initializable {
             customer_pane.setVisible(false);
             sales_pane.setVisible(false);
             purchase_pane.setVisible(false);
+            liv_pane.setVisible(false);
             dashboard_btn.setStyle("-fx-background-color:linear-gradient(to bottom right , rgba(121,172,255,0.7),  rgba(255,106,239,0.7))");
             billing_btn.setStyle("-fx-background-color:linear-gradient(to bottom right , rgba(121,172,255,0.2),  rgba(255,106,239,0.2))");
             customer_btn.setStyle("-fx-background-color:linear-gradient(to bottom right , rgba(121,172,255,0.2),  rgba(255,106,239,0.2))");
@@ -322,6 +360,7 @@ public class DashboardController implements Initializable {
             customer_pane.setVisible(false);
             sales_pane.setVisible(false);
             purchase_pane.setVisible(false);
+            liv_pane.setVisible(false);
             dashboard_btn.setStyle("-fx-background-color:linear-gradient(to bottom right , rgba(121,172,255,0.2),  rgba(255,106,239,0.2))");
             billing_btn.setStyle("-fx-background-color:linear-gradient(to bottom right , rgba(121,172,255,0.7),  rgba(255,106,239,0.7))");
             customer_btn.setStyle("-fx-background-color:linear-gradient(to bottom right , rgba(121,172,255,0.2),  rgba(255,106,239,0.2))");
@@ -334,6 +373,7 @@ public class DashboardController implements Initializable {
             customer_pane.setVisible(true);
             sales_pane.setVisible(false);
             purchase_pane.setVisible(false);
+            liv_pane.setVisible(false);
             dashboard_btn.setStyle("-fx-background-color:linear-gradient(to bottom right , rgba(121,172,255,0.2),  rgba(255,106,239,0.2))");
             billing_btn.setStyle("-fx-background-color:linear-gradient(to bottom right , rgba(121,172,255,0.2),  rgba(255,106,239,0.2))");
             customer_btn.setStyle("-fx-background-color:linear-gradient(to bottom right , rgba(121,172,255,0.7),  rgba(255,106,239,0.7))");
@@ -346,6 +386,7 @@ public class DashboardController implements Initializable {
             customer_pane.setVisible(false);
             sales_pane.setVisible(true);
             purchase_pane.setVisible(false);
+            liv_pane.setVisible(false);
             dashboard_btn.setStyle("-fx-background-color:linear-gradient(to bottom right , rgba(121,172,255,0.2),  rgba(255,106,239,0.2))");
             billing_btn.setStyle("-fx-background-color:linear-gradient(to bottom right , rgba(121,172,255,0.2),  rgba(255,106,239,0.2))");
             customer_btn.setStyle("-fx-background-color:linear-gradient(to bottom right , rgba(121,172,255,0.2),  rgba(255,106,239,0.2))");
@@ -358,16 +399,37 @@ public class DashboardController implements Initializable {
             customer_pane.setVisible(false);
             sales_pane.setVisible(false);
             purchase_pane.setVisible(true);
+            liv_pane.setVisible(false);
             dashboard_btn.setStyle("-fx-background-color:linear-gradient(to bottom right , rgba(121,172,255,0.2),  rgba(255,106,239,0.2))");
             billing_btn.setStyle("-fx-background-color:linear-gradient(to bottom right , rgba(121,172,255,0.2),  rgba(255,106,239,0.2))");
             customer_btn.setStyle("-fx-background-color:linear-gradient(to bottom right , rgba(121,172,255,0.2),  rgba(255,106,239,0.2))");
             sales_btn.setStyle("-fx-background-color:linear-gradient(to bottom right , rgba(121,172,255,0.2),  rgba(255,106,239,0.2))");
             purchase_btn.setStyle("-fx-background-color:linear-gradient(to bottom right , rgba(121,172,255,0.7),  rgba(255,106,239,0.7))");
             });
+        liv_btn.setOnMouseClicked(mouseEvent -> {
+			dasboard_pane.setVisible(false);
+			billing_pane.setVisible(false);
+			customer_pane.setVisible(false);
+			sales_pane.setVisible(false);
+			purchase_pane.setVisible(false);
+			liv_pane.setVisible(true);
+			dashboard_btn.setStyle(
+					"-fx-background-color:linear-gradient(to bottom right , rgba(121,172,255,0.2),  rgba(255,106,239,0.2))");
+			billing_btn.setStyle(
+					"-fx-background-color:linear-gradient(to bottom right , rgba(121,172,255,0.2),  rgba(255,106,239,0.2))");
+			customer_btn.setStyle(
+					"-fx-background-color:linear-gradient(to bottom right , rgba(121,172,255,0.2),  rgba(255,106,239,0.2))");
+			sales_btn.setStyle(
+					"-fx-background-color:linear-gradient(to bottom right , rgba(121,172,255,0.2),  rgba(255,106,239,0.2))");
+			purchase_btn.setStyle(
+					"-fx-background-color:linear-gradient(to bottom right , rgba(121,172,255,0.2),  rgba(255,106,239,0.2))");
+		});
+        }
+        
 
 
 
-    }
+    
 
     public void setUsername(){
         user.setText(User.name.toUpperCase());
@@ -379,6 +441,7 @@ public class DashboardController implements Initializable {
         customer_pane.setVisible(false);
         sales_pane.setVisible(false);
         purchase_pane.setVisible(false);
+        liv_pane.setVisible(false);
     }
 
     public List<Product> getItemsList(){
@@ -428,12 +491,66 @@ public class DashboardController implements Initializable {
             err.printStackTrace();
         }
     }
-    public void setAutoCompleteItemNumber(){
-        getItemsList();
-        List<Integer> itemNumberList=productsList.stream().map(Product::getId).collect(Collectors.toList());
-        ObservableList<Integer> observableItemList=FXCollections.observableArrayList(itemNumberList);
-        TextFields.bindAutoCompletion(commande_id_pd,observableItemList);
+    
+    // show livraison data
+	public ObservableList<Livraison> listLivraisonData(){
+        ObservableList<Livraison> livraisonList=FXCollections.observableArrayList();
+        connection=Database.getInstance().connectDB();
+        String sql="SELECT * FROM livraison";
+        try{
+            statement=connection.createStatement();
+            resultSet=statement.executeQuery(sql);
+            Livraison livraison;
+            while (resultSet.next()){
+                livraison=new Livraison(Integer.parseInt(resultSet.getString("numeroliv")),resultSet.getString("dateliv"),resultSet.getString("num_facture"));
+                livraisonList.addAll(livraison);
+            }
+        }catch (Exception err){
+            err.printStackTrace();}
+	        return livraisonList;}
+	
+	public void showLivraisonData(){
+		ObservableList<Livraison> livraisonList=listLivraisonData();
+		liv_id.setCellValueFactory(new PropertyValueFactory<>("id"));
+		liv_date.setCellValueFactory(new PropertyValueFactory<>("date"));
+		liv_num_facture.setCellValueFactory(new PropertyValueFactory<>("num_facture"));
+		liv_table.setItems(livraisonList);
+		
+	}
+    
+    
+    public int getProductIdByName(String productName) {
+        // Iterate through the products list to find the product with the matching name
+        for (Product product : productsList) {
+            if (product.getNom().equals(productName)) {
+                return product.getId(); // Return the ID if the name matches
+            }
+        }
+        return -1; // Return -1 if no matching product is found
     }
+    public void setAutoCompleteItemNumber() {
+        getItemsList();
+        List<String> itemNumberList = productsList.stream()
+                .map(Product::getNom)
+                .collect(Collectors.toList());
+        ObservableList<String> observableItemList = FXCollections.observableArrayList(itemNumberList);
+        TextFields.bindAutoCompletion(commande_id_pd, observableItemList);
+
+        // Listen for changes in the text field when a selection is made
+        commande_id_pd.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.isBlank()) {
+                int productId = getProductIdByName(newValue);
+                if (productId != -1) {
+                    // If a matching product is found, set the text field to its ID
+                    commande_id_pd.setText(String.valueOf(productId));
+                    getPriceOfTheItem();
+                }
+            }
+        });
+    }
+    
+
+
 
     public void comboBoxQuantity(){
         List<String> list=new ArrayList<>();
@@ -445,7 +562,7 @@ public class DashboardController implements Initializable {
     }
     public void checkForPriceandQuantity(){
         if(!commande_prix.getText().isBlank()&& !commande_quant.getSelectionModel().isEmpty()){
-            commande_total.setText(String.valueOf(Integer.parseInt(commande_prix.getText())*Integer.parseInt(commande_quant.getValue().toString())+100));
+            commande_total.setText(String.valueOf(Integer.parseInt(commande_prix.getText())*Integer.parseInt(commande_quant.getValue().toString())));
         }else{
             commande_total.setText("0");
         }
@@ -550,29 +667,7 @@ public class DashboardController implements Initializable {
 
     }
     
-    public void addDateShipping() {
-    	connection = Database.getInstance().connectDB();
-    	String sql = "INSERT INTO livraison(dateliv, id_commande) VALUES(?, ?)";
-    	try {
-    		preparedStatement = connection.prepareStatement(sql);
-    		preparedStatement.setString(1, date_comm_livraison.getValue().toString());
-    		preparedStatement.setString(2, commande_id_pd.getText());
-    		int result = preparedStatement.executeUpdate();
-    		if(result > 0) {
-    			showCommandeData();
-    			commandeClearData();
-    		}else {
-    			Alert alert = new Alert(Alert.AlertType.ERROR);
-    			alert.setTitle("Error Message");
-    			alert.setHeaderText(null);
-    			alert.setContentText("Veuillez les champs obligatoires , date de livraison.");
-    			alert.showAndWait();
-    		}
-    	}catch (Exception err) {
-    		err.printStackTrace();
-    	}
-    	
-    }
+
 
     public void showCommandeData(){
         ObservableList<Commande> billingList=listBilligData();
@@ -609,6 +704,77 @@ public class DashboardController implements Initializable {
         
         
     }
+    
+	public void selectProductData() {
+		int num = product_table.getSelectionModel().getSelectedIndex();
+		Product productData = product_table.getSelectionModel().getSelectedItem();
+		if (num - 1 < -1) {
+			return;
+		}
+		pd_txt_name.setText(productData.getNom());
+		pd_txt_price.setText(String.valueOf((int) productData.getPrice()));
+		pd_txt_quant.setText(String.valueOf(productData.getQuantity()));
+	}
+	
+	public void updateProductData() {
+		connection = Database.getInstance().connectDB();
+		String sql = "UPDATE products SET quantity=?,price=?, nom = ? WHERE id=?";
+		try {
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1, pd_txt_quant.getText());
+			preparedStatement.setString(2, pd_txt_price.getText());
+			preparedStatement.setString(3, pd_txt_name.getText());
+			preparedStatement.setString(4, String.valueOf(product_table.getSelectionModel().getSelectedItem().getId()));
+			int result = preparedStatement.executeUpdate();
+			if (result > 0) {
+				showProductData();
+				productClearData();
+			} else {
+				Alert alert = new Alert(Alert.AlertType.ERROR);
+				alert.setTitle("Error Message");
+				alert.setHeaderText(null);
+				alert.setContentText("Veuillez les champs obligatoires , nom, quantite, prix.");
+				alert.showAndWait();
+			}
+		} catch (Exception err) {
+			err.printStackTrace();
+		}
+	}
+	
+	public void productClearData() {
+		pd_txt_name.clear();
+		pd_txt_price.clear();
+		pd_txt_quant.clear();
+	}
+	
+	public void deleteProductData() {
+		connection = Database.getInstance().connectDB();
+		String sql;
+		try {
+			if (product_table.getSelectionModel().isEmpty()) {
+				sql = "DELETE FROM products";
+				preparedStatement = connection.prepareStatement(sql);
+			} else {
+				sql = "DELETE FROM products WHERE id=?";
+				preparedStatement = connection.prepareStatement(sql);
+				preparedStatement.setString(1,
+						String.valueOf(product_table.getSelectionModel().getSelectedItem().getId()));
+			}
+			int result = preparedStatement.executeUpdate();
+			if (result > 0) {
+				showProductData();
+				productClearData();
+			} else {
+				Alert alert = new Alert(Alert.AlertType.INFORMATION);
+				alert.setTitle("Message");
+				alert.setHeaderText(null);
+				alert.setContentText("Aucun contenu dans la table..");
+				alert.showAndWait();
+			}
+		} catch (Exception err) {
+			err.printStackTrace();
+		}
+	}
 
     public void selectCommandeTableData(){
         int num=commande_table.getSelectionModel().getSelectedIndex();
@@ -622,7 +788,7 @@ public class DashboardController implements Initializable {
     }
     public void updateSelectedCommandeData() {
         connection = Database.getInstance().connectDB();
-        String sql = "UPDATE commande SET quantity=?,price=?,total_amount=? HERE item_number=?";
+        String sql = "UPDATE commande SET quantity=?,price=?,total_amount=? WHERE item_number=?";
         try {
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1,commande_quant.getValue().toString());
@@ -726,6 +892,8 @@ public class DashboardController implements Initializable {
         connection=Database.getInstance().connectDB();
         String sql="SELECT id FROM clients WHERE PhoneNumber=?";
         String sql2 = "INSERT INTO livraison(dateliv, num_facture) VALUES(?, ?)";
+        //diminue the quantity of product
+        String sql3 = "UPDATE products SET quantity = quantity - ? WHERE id = ?";
         try{
             preparedStatement=connection.prepareStatement(sql);
             preparedStatement.setString(1,commande_tele.getText());
@@ -753,6 +921,10 @@ public class DashboardController implements Initializable {
                       preparedStatement.setString(6,resultSet.getString("total_amount"));
                       preparedStatement.setString(7,commande_date.getValue().toString());
                       preparedStatement.executeUpdate();
+                      preparedStatement = connection.prepareStatement(sql3);
+                      preparedStatement.setString(1, resultSet.getString("quantity"));
+                      preparedStatement.setString(2, resultSet.getString("item_number"));
+                      preparedStatement.executeUpdate();
                       count++;
                       
 
@@ -761,12 +933,17 @@ public class DashboardController implements Initializable {
                       CommandeClearCustomerData();
                       deleteCommandeData();
                       showSalesData();
-                      preparedStatement = connection.prepareStatement(sql2);
-                      preparedStatement.setString(1, date_comm_livraison.getValue().toString());
-                      preparedStatement.setString(2, facture_num.getText());
-                      preparedStatement.executeUpdate();
+	                   preparedStatement = connection.prepareStatement(sql2);
+	                   preparedStatement.setString(1, date_comm_livraison.getValue().toString());
+	                   preparedStatement.setString(2, facture_num.getText());
+	                   preparedStatement.executeUpdate();
+
+                      //do a sql exception
+                      
+                      
                       setInvoiceNum();
                       showDashboardData();
+                      showProductData();
                       Alert alert = new Alert(Alert.AlertType.INFORMATION);
                       alert.setTitle("Message");
                       alert.setHeaderText(null);
@@ -1025,6 +1202,92 @@ public class DashboardController implements Initializable {
         }
 
     }
+    
+    //search bar for product
+	public void searchProduct() {
+		FilteredList<Product> filteredData = new FilteredList<>(listProductData(), p -> true);
+		search_product.textProperty().addListener((observable, oldValue, newValue) -> {
+			filteredData.setPredicate(product -> {
+				if (newValue == null || newValue.isEmpty()) {
+					return true;
+				}
+				String lowerCaseFilter = newValue.toLowerCase();
+				if (product.getNom().toLowerCase().contains(lowerCaseFilter)) {
+					return true;
+				}
+				return false;
+			});
+		});
+		SortedList<Product> sortedData = new SortedList<>(filteredData);
+		sortedData.comparatorProperty().bind(product_table.comparatorProperty());
+		product_table.setItems(sortedData);
+	}
+	
+	//search bar for sales
+	public void searchSales() {
+		FilteredList<Sales> filteredData = new FilteredList<>(listSalesData(), p -> true);
+		search_sales.textProperty().addListener((observable, oldValue, newValue) -> {
+			filteredData.setPredicate(sales -> {
+				if (newValue == null || newValue.isEmpty()) {
+					return true;
+				}
+				String lowerCaseFilter = newValue.toLowerCase();
+				if (sales.getInv_num().toLowerCase().contains(lowerCaseFilter)) {
+					return true;
+				}
+				return false;
+			});
+		});
+		SortedList<Sales> sortedData = new SortedList<>(filteredData);
+		sortedData.comparatorProperty().bind(sales_table.comparatorProperty());
+		sales_table.setItems(sortedData);
+	
+	}
+	
+	//search bar for customer
+	public void searchCustomer() {
+		System.out.println("searching");
+		FilteredList<Client> filteredData = new FilteredList<>(listClientData(), p -> true);
+		search_customer.textProperty().addListener((observable, oldValue, newValue) -> {
+			filteredData.setPredicate(client -> {
+				if (newValue == null || newValue.isEmpty()) {
+					return true;
+				}
+				String lowerCaseFilter = newValue.toLowerCase();
+				if (client.getNom().toLowerCase().contains(lowerCaseFilter)) {
+					return true;
+				}
+				return false;
+			});
+		});
+		SortedList<Client> sortedData = new SortedList<>(filteredData);
+		sortedData.comparatorProperty().bind(customer_table.comparatorProperty());
+		customer_table.setItems(sortedData);
+	
+	}
+	
+	//search bar for livraison by date
+	public void searchLivraison() {
+	    FilteredList<Livraison> filteredData = new FilteredList<>(listLivraisonData(), p -> true);
+	    search_liv_date.valueProperty().addListener((observable, oldValue, newValue) -> {
+	        filteredData.setPredicate(livraison -> {
+	            if (newValue == null) {
+	                return true; // Return true if newValue is null (i.e., no date selected)
+	            }
+	            String selectedDateStr = newValue.toString();
+	            String livraisonDateStr = livraison.getDate(); // Assuming getDate() returns a String
+	            return livraisonDateStr != null && livraisonDateStr.equals(selectedDateStr);
+	        });
+	    });
+	    SortedList<Livraison> sortedData = new SortedList<>(filteredData);
+	    sortedData.comparatorProperty().bind(liv_table.comparatorProperty());
+	    liv_table.setItems(sortedData);
+	}
+	
+	
+	
+    
+    
     public ObservableList<Sales> listSalesData(){
         ObservableList<Sales> salesList=FXCollections.observableArrayList();
         connection=Database.getInstance().connectDB();
@@ -1044,7 +1307,6 @@ public class DashboardController implements Initializable {
     }
     public void showSalesData(){
         ObservableList<Sales> salesList=listSalesData();
-        sales_col_id.setCellValueFactory(new PropertyValueFactory<>("id"));
         sales_col_inv_num.setCellValueFactory(new PropertyValueFactory<>("inv_num"));
         sales_col_cust_name.setCellValueFactory(new PropertyValueFactory<>("custName"));
         sales_col_price.setCellValueFactory(new PropertyValueFactory<>("price"));
@@ -1056,21 +1318,7 @@ public class DashboardController implements Initializable {
 
         getTotalSalesAmount();
     }
-    public void printSalesDetails(){
-        connection=Database.getInstance().connectDB();
-        String sql="SELECT * FROM factures s INNER JOIN clients c ON s.cust_id=c.id";
-        try{
-            JasperDesign jasperDesign= JRXmlLoader.load(this.getClass().getClassLoader().getResourceAsStream("jasper-reports/sales_report.jrxml"));
-            JRDesignQuery updateQuery=new JRDesignQuery();
-            updateQuery.setText(sql);
-            jasperDesign.setQuery(updateQuery);
-            JasperReport jasperReport= JasperCompileManager.compileReport(jasperDesign);
-            JasperPrint jasperPrint= JasperFillManager.fillReport(jasperReport,null,connection);
-            JasperViewer.viewReport(jasperPrint ,false);
-        }catch (Exception err){
-            err.printStackTrace();
-        }
-    }
+
     public void getTotalPurchaseAmount(){
         connection=Database.getInstance().connectDB();
         String sql="SELECT * FROM products";
@@ -1158,6 +1406,7 @@ public class DashboardController implements Initializable {
             int result=preparedStatement.executeUpdate();
             if(result>0){
                 showProductData();
+                productClearData();
             }else{
                 Alert alert=new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Error Message");
@@ -1198,7 +1447,23 @@ public class DashboardController implements Initializable {
     public void getTotalStocks(){
         int totalPurchase=Integer.parseInt(dash_total_purchase.getText());
         int total_sold= Integer.parseInt(dash_total_sold.getText());
-        int totalStockLeft=totalPurchase-total_sold;
+        String sql = "SELECT SUM(quantity) as total_stock FROM products";
+        int totalStockLeft=0;
+        try{
+            statement=connection.createStatement();
+            resultSet=statement.executeQuery(sql);
+            while (resultSet.next()){
+                totalStockLeft=resultSet.getInt("total_stock");
+            }
+            }catch (Exception err){
+            	Alert alert = new Alert(Alert.AlertType.ERROR);
+				alert.setHeight(500);
+				alert.setTitle("Error Message");
+				alert.setHeaderText(null);
+				alert.setContentText(err.getMessage());
+				alert.showAndWait();
+				
+            }
         dash_total_stocks.setText(String.valueOf(totalStockLeft));
     }
 
@@ -1302,6 +1567,7 @@ public class DashboardController implements Initializable {
 //      DASHBOARD PANE
         showDashboardData();
 
+
 //      BILLING PANE
         setAutoCompleteItemNumber();
         comboBoxQuantity();
@@ -1316,5 +1582,16 @@ public class DashboardController implements Initializable {
 
 //      Purchase Pane
         showProductData();
+        
+        // Livraison Pane
+        showLivraisonData();
+        
+        // Search bar
+        searchProduct();
+        searchSales();
+        searchCustomer();
+        searchLivraison();
+
+        
     }
 }

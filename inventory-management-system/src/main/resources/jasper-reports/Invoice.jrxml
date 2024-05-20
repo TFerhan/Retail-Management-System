@@ -90,89 +90,89 @@
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter (2)"/>
 		<parameter name="InvNum" class="java.lang.String"/>
 		<queryString language="SQL">
-			<![CDATA[SELECT * FROM `sales` s INNER JOIN customers c ON s.cust_id=c.id and s.inv_num=$P{InvNum};]]>
+			<![CDATA[SELECT * FROM `factures` s INNER JOIN clients c ON s.cust_id=c.id and s.inv_num=$P{InvNum};]]>
 		</queryString>
 		<field name="item_number" class="java.lang.String">
 			<property name="com.jaspersoft.studio.field.name" value="item_number"/>
 			<property name="com.jaspersoft.studio.field.label" value="item_number"/>
-			<property name="com.jaspersoft.studio.field.tree.path" value="sales"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="factures"/>
 		</field>
 		<field name="price" class="java.lang.Double">
 			<property name="com.jaspersoft.studio.field.name" value="price"/>
 			<property name="com.jaspersoft.studio.field.label" value="price"/>
-			<property name="com.jaspersoft.studio.field.tree.path" value="sales"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="factures"/>
 		</field>
 		<field name="quantity" class="java.lang.Integer">
 			<property name="com.jaspersoft.studio.field.name" value="quantity"/>
 			<property name="com.jaspersoft.studio.field.label" value="quantity"/>
-			<property name="com.jaspersoft.studio.field.tree.path" value="sales"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="factures"/>
 		</field>
 		<field name="total_amount" class="java.lang.Double">
 			<property name="com.jaspersoft.studio.field.name" value="total_amount"/>
 			<property name="com.jaspersoft.studio.field.label" value="total_amount"/>
-			<property name="com.jaspersoft.studio.field.tree.path" value="sales"/>
+			<property name="com.jaspersoft.studio.field.tree.path" value="factures"/>
 		</field>
 		<variable name="Final Amount" class="java.lang.Double" calculation="Sum">
 			<variableExpression><![CDATA[$F{total_amount}]]></variableExpression>
 		</variable>
 	</subDataset>
 	<queryString language="SQL">
-		<![CDATA[SELECT * FROM `sales` s INNER JOIN customers c ON s.cust_id=c.id and s.inv_num=(SELECT MAX(inv_num) as inv_num FROM `sales`);]]>
+		<![CDATA[SELECT * FROM `factures` s INNER JOIN clients c ON s.cust_id=c.id and s.inv_num=(SELECT MAX(inv_num) as inv_num FROM `factures`);]]>
 	</queryString>
 	<field name="id" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.name" value="id"/>
 		<property name="com.jaspersoft.studio.field.label" value="id"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="sales"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="factures"/>
 	</field>
 	<field name="inv_num" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.name" value="inv_num"/>
 		<property name="com.jaspersoft.studio.field.label" value="inv_num"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="sales"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="factures"/>
 	</field>
 	<field name="cust_id" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.name" value="cust_id"/>
 		<property name="com.jaspersoft.studio.field.label" value="cust_id"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="sales"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="factures"/>
 	</field>
 	<field name="price" class="java.lang.Double">
 		<property name="com.jaspersoft.studio.field.name" value="price"/>
 		<property name="com.jaspersoft.studio.field.label" value="price"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="sales"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="factures"/>
 	</field>
 	<field name="quantity" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.name" value="quantity"/>
 		<property name="com.jaspersoft.studio.field.label" value="quantity"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="sales"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="factures"/>
 	</field>
 	<field name="total_amount" class="java.lang.Double">
 		<property name="com.jaspersoft.studio.field.name" value="total_amount"/>
 		<property name="com.jaspersoft.studio.field.label" value="total_amount"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="sales"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="factures"/>
 	</field>
 	<field name="date" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.name" value="date"/>
 		<property name="com.jaspersoft.studio.field.label" value="date"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="sales"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="factures"/>
 	</field>
 	<field name="item_number" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.name" value="item_number"/>
 		<property name="com.jaspersoft.studio.field.label" value="item_number"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="sales"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="factures"/>
 	</field>
 	<field name="COLUMN_9" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.name" value="id"/>
 		<property name="com.jaspersoft.studio.field.label" value="id"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="customers"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="clients"/>
 	</field>
 	<field name="Name" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.name" value="Name"/>
 		<property name="com.jaspersoft.studio.field.label" value="Name"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="customers"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="clients"/>
 	</field>
 	<field name="PhoneNumber" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.name" value="PhoneNumber"/>
 		<property name="com.jaspersoft.studio.field.label" value="PhoneNumber"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="customers"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="clients"/>
 	</field>
 	<variable name="Final Amount" class="java.lang.Double" calculation="Sum">
 		<variableExpression><![CDATA[$F{total_amount}]]></variableExpression>

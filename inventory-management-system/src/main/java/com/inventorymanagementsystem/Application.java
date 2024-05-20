@@ -6,7 +6,9 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 import static org.burningwave.core.assembler.StaticComponentContainer.Modules;
 
@@ -17,7 +19,9 @@ public class Application extends javafx.application.Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("login-view.fxml"));
+    	URL url = new File("src/main/resources/com/inventorymanagementsystem/login-view.fxml").toURI().toURL();
+    	Parent root = FXMLLoader.load(url);
+        //Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("login-view.fxml"));
         Scene scene = new Scene(root);
         stage.setTitle("Fashion Club Inventory Management System");
         root.setOnMousePressed((event)->{
